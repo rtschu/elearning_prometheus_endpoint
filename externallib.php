@@ -60,7 +60,7 @@ class local_wstemplate_external extends external_api {
 
         $b= get_data(false, false, new stdClass());
 
-        return $params['welcomemessage'] . $USER->firstname ;;
+        return implode(",", $b[0][2]);
     }
 
     /**
