@@ -21,6 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once($CFG->libdir . "/externallib.php");
+require_once($CFG->dirroot . '/report/elearning/locallib.php');
 
 class local_wstemplate_external extends external_api {
 
@@ -57,6 +58,8 @@ class local_wstemplate_external extends external_api {
             throw new moodle_exception('cannotviewprofile');
         }
 
+        $b= get_data(false, false, new stdClass());
+
         return $params['welcomemessage'] . $USER->firstname ;;
     }
 
@@ -68,6 +71,37 @@ class local_wstemplate_external extends external_api {
         return new external_value(PARAM_TEXT, 'The welcome message + user first name');
     }
 
+    public static function prometheus_endpoint_parameters(){
+        return new external_function_parameters(
+            array('categoryid' => new external_value(PARAM_TEXT, 'The category by default it is 0', VALUE_DEFAULT, 'Hello world, '))
+        );
+    }
+
+    public static function prometheus_endpoint($categoryid = 0){
+        global $USER;
+        //Parameter validation
+        //REQUIRED
+        $params = self::validate_parameters(self::hello_world_parameters(),
+            array('welcomemessage' => $categoryid));
+
+        //Context validation
+        //OPTIONAL but in most web service it should present
+        $context = get_context_instance(CONTEXT_USER, $USER->id);
+        self::validate_context($context);
+
+        //Capability checking
+        //OPTIONAL but in most web service it should present
+        if (!has_capability('moodle/user:viewdetails', $context)) {
+            throw new moodle_exception('cannotviewprofile');
+        }
+
+
+    }
+
+    public static function prometheus_endpoint_returns(){
+        return new external_value(PARAM_TEXT, 'The e-learning report in Prometheus compatible formatting.');
+    }
 
 
 }
+

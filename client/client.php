@@ -22,8 +22,8 @@
 // 5- Run this script directly from your browser: you should see 'Hello, FIRSTNAME'
 
 /// SETUP - NEED TO BE CHANGED
-$token = 'dff3bc6a9368d3b0db1ef59f6760ef7c';
-$domainname = 'http://YOURMOODLE';
+$token = '4d06ceb585b29f7253077ce9f285df1b';
+$domainname = 'http://172.17.0.1/moodle';
 
 /// FUNCTION NAME
 $functionname = 'local_wstemplate_hello_world';
