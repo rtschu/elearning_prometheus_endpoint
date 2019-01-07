@@ -23,17 +23,10 @@
 
 // We defined the web service functions to install.
 $functions = array(
-        'local_wstemplate_hello_world' => array(
-                'classname'   => 'local_wstemplate_external',
-                'methodname'  => 'hello_world',
-                'classpath'   => 'local/wstemplate/externallib.php',
-                'description' => 'Return Hello World FIRSTNAME. Can change the text (Hello World) sending a new text as parameter',
-                'type'        => 'read',
-            ),
         'local_wstemplate_prometheus_endpoint' => array(
-            'classname'   => 'local_wstemplate_external',
+            'classname'   => 'local_elearning_prometheus_endpoint_external',
             'methodname'  => 'prometheus_endpoint',
-            'classpath'   => 'local/wstemplate/externallib.php',
+            'classpath'   => 'local/elearning_prometheus_endpoint/externallib.php',
             'description' => 'Returns the prometheus scrapable version of the e-learning report',
             'type'        => 'read',
             )
@@ -42,7 +35,7 @@ $functions = array(
 // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
 $services = array(
         'My service' => array(
-                'functions' => array ('local_wstemplate_prometheus_endpoint'),
+                'functions' => array ('local_elearning_prometheus_endpoint_prometheus_endpoint'),
                 'restrictedusers' => 0,
                 'enabled'=>1,
         )
