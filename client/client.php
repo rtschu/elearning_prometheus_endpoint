@@ -26,7 +26,7 @@ $token = '4d06ceb585b29f7253077ce9f285df1b';
 $domainname = 'http://172.17.0.1/moodle';
 
 /// FUNCTION NAME
-$functionname = 'local_wstemplate_hello_world';
+$functionname = 'local_wstemplate_prometheus_endpoint';
 
 /// PARAMETERS
 $welcomemsg = 'Hello, ';

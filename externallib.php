@@ -40,27 +40,6 @@ class local_wstemplate_external extends external_api {
      * @return string welcome message
      */
     public static function hello_world($welcomemessage = 'Hello world, ') {
-        global $USER;
-
-        //Parameter validation
-        //REQUIRED
-        $params = self::validate_parameters(self::hello_world_parameters(),
-                array('welcomemessage' => $welcomemessage));
-
-        //Context validation
-        //OPTIONAL but in most web service it should present
-        $context = get_context_instance(CONTEXT_USER, $USER->id);
-        self::validate_context($context);
-
-        //Capability checking
-        //OPTIONAL but in most web service it should present
-        if (!has_capability('moodle/user:viewdetails', $context)) {
-            throw new moodle_exception('cannotviewprofile');
-        }
-
-        $b= get_data(false, false, new stdClass());
-
-        return implode(",", $b[0][2]);
     }
 
     /**
@@ -68,7 +47,7 @@ class local_wstemplate_external extends external_api {
      * @return external_description
      */
     public static function hello_world_returns() {
-        return new external_value(PARAM_TEXT, 'The welcome message + user first name');
+        return new external_value(PARAM_RAW, 'prometheus data');
     }
 
     public static function prometheus_endpoint_parameters(){
@@ -81,9 +60,9 @@ class local_wstemplate_external extends external_api {
         global $USER;
         //Parameter validation
         //REQUIRED
-        $params = self::validate_parameters(self::hello_world_parameters(),
+        /*$params = self::validate_parameters(self::prometheus_endpoint_parameters(),
             array('welcomemessage' => $categoryid));
-
+        */
         //Context validation
         //OPTIONAL but in most web service it should present
         $context = get_context_instance(CONTEXT_USER, $USER->id);
@@ -94,6 +73,69 @@ class local_wstemplate_external extends external_api {
         if (!has_capability('moodle/user:viewdetails', $context)) {
             throw new moodle_exception('cannotviewprofile');
         }
+
+        $config = new stdClass();
+        $config -> category = "";
+        $config -> context = null;
+        $config -> visibility = get_string('hiddenandshownplural', 'report_elearning'); //needed?
+
+        $b = get_data(false, false, $config);
+
+        //prometheus data endpoint format
+
+        //split data in courses and categories
+        //format for summary: categorys_total{category="<category>"} <value>
+        //format for single datapoint: course_<course>{plugin="<block/mod>"} value
+
+        array_shift($b[0]);
+        array_shift($b[0]);
+        array_shift($b[1]);
+        array_shift($b[1]);
+        $categorys = $b[0];
+        $courses = $b[1];
+        $plugins = getheaders();
+        //don't need ID and cat/course
+        array_shift($plugins);
+        array_shift($plugins);
+
+        $return = "";
+
+        //Categorys first
+        //O(n * d) !! d= 72 atm so technically O(n) just watch out cause d is the number of blocks and mods
+        for($i = 0; $i < sizeof($categorys); $i++){
+            $category = $categorys[$i];
+            $name = explode(">", $category[1])[1];
+            $name = explode("<", $name)[0];
+            //no need for id or name anymore
+            array_shift($category);
+            array_shift($category);
+            // multibyte broke for some reason
+            $name = str_replace(" ", "_" , $name);
+
+            for($j=0; $j < sizeof($plugins); $j++){
+                $return .= $name . "{plugin=\"{$plugins[$j]}\"} {$category[$j]}" . "\n";
+            }
+
+        }
+
+        //now for courses
+        for($i = 0; $i < sizeof($courses); $i++){
+            $course = $courses[$i];
+            $name = explode(">", $course[1])[1];
+            $name = explode("<", $name)[0];
+            //no need for id or name anymore
+            array_shift($course);
+            array_shift($course);
+            // multibyte broke for some reason
+            $name = str_replace(" ", "_" , $name);
+
+            for($j=0; $j < sizeof($plugins); $j++){
+                $return .= $name . "{plugin=\"{$plugins[$j]}\"} {$course[$j]}" . "\n";
+            }
+
+        }
+
+        return $return;
 
 
     }
