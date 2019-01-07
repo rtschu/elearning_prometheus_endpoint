@@ -28,9 +28,12 @@ $domainname = 'http://172.17.0.1/moodle';
 /// FUNCTION NAME
 $functionname = 'local_elearning_prometheus_endpoint_prometheus_endpoint';
 
-/// PARAMETERS
+/// PARAMETER TWEAKS
+// set to a categoryid other than 0 to just fetch that category
 $categoryid = 0;
+// set this to true to skip hidden activities
 $onlyvisible = false;
+// set this to true to disable the count of the news forum
 $nonews = false;
 
 ///// XML-RPC CALL
