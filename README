@@ -1,9 +1,10 @@
-Web service template plugin for Moodle 2.X
-------------------------------------------
-
-It is a template designed as a starting point for developing third party web services.
-It includes a simple Hello World example.
-
-To test:
-1- install the plugin in moodle/local/wstemplate/
-2- Read, setup and run moodle/local/wstemplate/client/client.php
+This webservice provides an endpoint for the data logging programm Prometheus
+Setup:
+  Clone this repository into the /local folder of your Moodle installation
+  Install the Plugin
+  Create a user to use the Service and create a Token for him
+  Move the client folder of your cloned repository to the machine you run Prometheus on.
+  Install a web server like nginx or Apache and host the client.php supplied in the client folder
+  Change Domainname, Token and optionally tweak Parameters
+  Point Prometheus at the client.php
+  Happy Scraping
