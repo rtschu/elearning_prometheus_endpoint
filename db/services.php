@@ -23,8 +23,8 @@
 
 // We defined the web service functions to install.
 $functions = array(
-        'local_wstemplate_prometheus_endpoint' => array(
-            'classname'   => 'local_elearning_prometheus_endpoint_external',
+        'local_elearning_prometheus_endpoint_prometheus_endpoint' => array(
+            'classname'   => 'local_elearning_external',
             'methodname'  => 'prometheus_endpoint',
             'classpath'   => 'local/elearning_prometheus_endpoint/externallib.php',
             'description' => 'Returns the prometheus scrapable version of the e-learning report',

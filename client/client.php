@@ -22,11 +22,11 @@
 // 5- Run this script directly from your browser: you should see 'Hello, FIRSTNAME'
 
 /// SETUP - NEED TO BE CHANGED
-$token = '664cf87d4f4e2ae104e1526b1a55f11a';
+$token = 'd9963b80c4ec050eed0576f48c5405a9';
 $domainname = 'http://172.17.0.1/moodle';
 
 /// FUNCTION NAME
-$functionname = 'local_wstemplate_prometheus_endpoint';
+$functionname = 'local_elearning_prometheus_endpoint_prometheus_endpoint';
 
 /// PARAMETERS
 $categoryid = 0;
