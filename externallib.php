@@ -77,6 +77,7 @@ class local_elearning_external extends external_api {
         array_shift($plugins);
 
         $return = "";
+        $summary = "";
 
         //Categorys first
         //O(n * d) !! d= 72 atm so technically O(n) just watch out cause d is the number of blocks and mods
@@ -93,6 +94,7 @@ class local_elearning_external extends external_api {
             for($j=0; $j < sizeof($plugins); $j++){
                 $return .= "category_" . $name . "{plugin=\"{$plugins[$j]}\"} {$category[$j]}" . "\n";
             }
+            $summary .= "Category_Overview{category=\"{$name}\"} ". $category[sizeof($category) - 2] ."\n";
 
         }
 
@@ -111,9 +113,11 @@ class local_elearning_external extends external_api {
                 $return .= "course_" . $name . "{plugin=\"{$plugins[$j]}\"} {$course[$j]}" . "\n";
             }
 
+            $summary .= "Course_Overview{course=\"{$name}\"} ". $course[sizeof($course) - 2] ."\n";
+
         }
 
-        return $return;
+        return $return . $summary;
 
 
     }
