@@ -25,44 +25,23 @@ require_once($CFG->dirroot . '/report/elearning/locallib.php');
 
 class local_wstemplate_external extends external_api {
 
-    /**
-     * Returns description of method parameters
-     * @return external_function_parameters
-     */
-    public static function hello_world_parameters() {
-        return new external_function_parameters(
-                array('welcomemessage' => new external_value(PARAM_TEXT, 'The welcome message. By default it is "Hello world,"', VALUE_DEFAULT, 'Hello world, '))
-        );
-    }
-
-    /**
-     * Returns welcome message
-     * @return string welcome message
-     */
-    public static function hello_world($welcomemessage = 'Hello world, ') {
-    }
-
-    /**
-     * Returns description of method result value
-     * @return external_description
-     */
-    public static function hello_world_returns() {
-        return new external_value(PARAM_RAW, 'prometheus data');
-    }
-
     public static function prometheus_endpoint_parameters(){
         return new external_function_parameters(
-            array('categoryid' => new external_value(PARAM_TEXT, 'The category by default it is 0', VALUE_DEFAULT, 'Hello world, '))
+            array('categoryid' => new external_value(PARAM_INT, 'The category by default it is 0', VALUE_DEFAULT, 0),
+                  'visibility' => new external_value(PARAM_BOOL, "wether only invisible activities shall be counted", VALUE_DEFAULT, false),
+                  'nonews'     => new external_value(PARAM_BOOL,"if set to true news forums won't be counted", VALUE_DEFAULT, false))
         );
     }
 
-    public static function prometheus_endpoint($categoryid = 0){
+    public static function prometheus_endpoint($categoryid, $visibility, $nonews){
         global $USER;
         //Parameter validation
         //REQUIRED
-        /*$params = self::validate_parameters(self::prometheus_endpoint_parameters(),
-            array('welcomemessage' => $categoryid));
-        */
+        $params = self::validate_parameters(self::prometheus_endpoint_parameters(),
+            array('categoryid' => $categoryid,
+                  'visibility' => $visibility,
+                  'nonews'     => $nonews));
+
         //Context validation
         //OPTIONAL but in most web service it should present
         $context = get_context_instance(CONTEXT_USER, $USER->id);
@@ -75,11 +54,10 @@ class local_wstemplate_external extends external_api {
         }
 
         $config = new stdClass();
-        $config -> category = "";
+        $config -> category = $categoryid;
         $config -> context = null;
-        $config -> visibility = get_string('hiddenandshownplural', 'report_elearning'); //needed?
 
-        $b = get_data(false, false, $config);
+        $b = get_data($visibility, $nonews, $config);
 
         //prometheus data endpoint format
 
@@ -113,7 +91,7 @@ class local_wstemplate_external extends external_api {
             $name = str_replace(" ", "_" , $name);
 
             for($j=0; $j < sizeof($plugins); $j++){
-                $return .= $name . "{plugin=\"{$plugins[$j]}\"} {$category[$j]}" . "\n";
+                $return .= "category_" . $name . "{plugin=\"{$plugins[$j]}\"} {$category[$j]}" . "\n";
             }
 
         }
@@ -130,7 +108,7 @@ class local_wstemplate_external extends external_api {
             $name = str_replace(" ", "_" , $name);
 
             for($j=0; $j < sizeof($plugins); $j++){
-                $return .= $name . "{plugin=\"{$plugins[$j]}\"} {$course[$j]}" . "\n";
+                $return .= "course_" . $name . "{plugin=\"{$plugins[$j]}\"} {$course[$j]}" . "\n";
             }
 
         }

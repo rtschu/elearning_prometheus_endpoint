@@ -22,20 +22,22 @@
 // 5- Run this script directly from your browser: you should see 'Hello, FIRSTNAME'
 
 /// SETUP - NEED TO BE CHANGED
-$token = '4d06ceb585b29f7253077ce9f285df1b';
+$token = '664cf87d4f4e2ae104e1526b1a55f11a';
 $domainname = 'http://172.17.0.1/moodle';
 
 /// FUNCTION NAME
 $functionname = 'local_wstemplate_prometheus_endpoint';
 
 /// PARAMETERS
-$welcomemsg = 'Hello, ';
+$categoryid = 0;
+$onlyvisible = false;
+$nonews = false;
 
 ///// XML-RPC CALL
 header('Content-Type: text/plain');
 $serverurl = $domainname . '/webservice/xmlrpc/server.php'. '?wstoken=' . $token;
 require_once('./curl.php');
 $curl = new curl;
-$post = xmlrpc_encode_request($functionname, array($welcomemsg));
+$post = xmlrpc_encode_request($functionname, array($categoryid, $onlyvisible, $nonews));
 $resp = xmlrpc_decode($curl->post($serverurl, $post));
 print_r($resp);
